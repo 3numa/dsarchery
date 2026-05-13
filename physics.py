@@ -14,8 +14,8 @@ MAX_Z          = 1000
 BASE_VZ        = 1100  # wz/sec at 100% draw
 
 # Wind drift coefficient: screen-px per wind-unit per second.
-# At wind=10 over a 1s flight this gives ~47px of lateral drift.
-WIND_COEFF = 4.7
+# At wind=10 over a 1s flight this gives ~35px of lateral drift.
+WIND_COEFF = 3.5
 
 
 def project(wx, wy, wz, vp_x, vp_y):
@@ -63,32 +63,51 @@ class Arrow:
 
     def update(self, dt, wind):
         """wind: ±10 max. Positive = pushes right."""
+
         if not self.alive:
             return
 
         self.flight_t += dt
         t = self.flight_t
 
-        # Wind accumulates in screen space directly
-        self.wind_drift_sx += wind * WIND_COEFF * dt
+        # Wind accumulates directly in screen space
+        self.wind_drift_sx += wind * dt
 
-        self.wz    = self.vz * t
-        scale      = max(0.01, 1.0 - self.wz / (MAX_Z * 1.4))
+        # Forward depth movement
+        self.wz = self.vz * t
 
-        # Screen Y: purely falling half-parabola, no perspective warping
-        self.screen_sy = self.start_sy + 0.5 * GRAVITY_SCREEN * t * t
+        # Perspective scale only for depth calculations
+        scale = max(0.01, 1.0 - self.wz / (MAX_Z * 1.4))
 
-        # World horizontal → screen horizontal via projection, then add wind
-        self.wx        = self.start_wx + self.horiz_v * t
-        self.screen_sx = self.vp_x + self.wx * scale + self.wind_drift_sx
+        # Vertical gravity arc
+        self.screen_sy = (
+                self.start_sy
+                + 0.5 * GRAVITY_SCREEN * t * t
+        )
 
-        # Back-derive wy for collision (project() must stay consistent)
-        self.wy = (self.screen_sy - self.vp_y) / scale
+        # Horizontal motion starts from aimed mouse position
+        self.wx = self.horiz_v * t
 
+        self.screen_sx = (
+                self.start_sx  # <- original aimed X position
+                + self.wx
+                + self.wind_drift_sx
+        )
+
+        # Keep projection-consistent world y for collisions
+        self.wy = (
+                          self.screen_sy - self.vp_y
+                  ) / scale
+
+        # Arrow shaft reveal animation
         self.shaft_reveal = min(1.0, t / 0.20)
 
-        if self.wz >= MAX_Z or self.screen_sy > self.vp_y + 600:
-            self.alive  = False
+        # End conditions
+        if (
+                self.wz >= MAX_Z
+                or self.screen_sy > self.vp_y + 600
+        ):
+            self.alive = False
             self.landed = True
 
     def screen_pos(self):

@@ -12,9 +12,7 @@ from renderer import Renderer
 
 TOTAL_ARROWS = 10
 FPS          = 60
-WIND_DRIFT   = 0.05   # wind changes slowly so player can read it
-MAX_TARGETS  = 4
-
+MAX_TARGETS  = 6
 
 class Game:
     def __init__(self, surface: pygame.Surface):
@@ -39,10 +37,11 @@ class Game:
         self.arrows = TOTAL_ARROWS
         self.over   = False
         # wind: positive = rightward (matches wx accumulation in physics)
-        self.wind   = random.uniform(-8, 8)
+        self.wind   = random.randint(-8, 8)
         self.t      = 0.0
 
         self.score_pops = []
+        self.SHOW_QUADTREE = False
 
     def _fire(self):
         if self.arrows <= 0 or self.over:
@@ -77,7 +76,7 @@ class Game:
         self.charge_power = 0.0
         self.aim_h        = 0.0
         self.score_pops   = []
-        self.wind         = random.uniform(-10, 10)
+        self.wind         = random.randint(-8, 8)
         self.t            = 0.0
         self.qt           = QuadTree(Rect(0, 0, W, H))
 
@@ -86,6 +85,9 @@ class Game:
             if event.key == pygame.K_SPACE and not self.charging and self.arrows > 0 and not self.over:
                 self.charging     = True
                 self.charge_power = 0.0
+
+            if event.key == pygame.K_h:
+                self.SHOW_QUADTREE = not self.SHOW_QUADTREE
 
             if event.key == pygame.K_r:
                 self._restart()
@@ -148,7 +150,7 @@ class Game:
 
         self.t    += dt
         # wind drifts as a random walk, clamped to ±45
-        self.wind += random.gauss(0, 0.25) * WIND_DRIFT
+        self.wind += random.uniform(0, 0.05)
         self.wind  = max(-8, min(8, self.wind))
 
         if self.charging:
@@ -190,6 +192,18 @@ class Game:
 
         self._rebuild_qt()
         self._check_collisions()
+
+        self._rebuild_qt()
+        self._check_collisions()
+
+        if self.SHOW_QUADTREE:
+            for rect in self.qt.get_leaf_boundaries():
+                pygame.draw.rect(
+                    self.surface,
+                    (0, 255, 0),
+                    pygame.Rect(rect.x, rect.y, rect.w, rect.h),
+                    1
+                )
 
         r.draw_arrow(self.arrow)
         r.draw_bow(self.charge_power, self.charging)          # bow stays centered, cosmetic

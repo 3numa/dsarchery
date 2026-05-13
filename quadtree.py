@@ -3,7 +3,7 @@
 # Divides 2D space into quadrants recursively so we only check
 # collisions between objects that are actually close to each other.
 
-MAX_OBJECTS = 2   # max objects per node before it splits — finer partitions
+MAX_OBJECTS = 2  # max objects per node before it splits — finer partitions
 MAX_DEPTH   = 6   # hard cap to prevent infinite recursion
 
 
