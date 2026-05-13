@@ -43,9 +43,9 @@ class QuadTree:
         hw, hh = w / 2, h / 2
         d = self.depth + 1
         self.children = [
-            QuadTree(Rect(x,      y,      hw, hh), d),  # NW
-            QuadTree(Rect(x + hw, y,      hw, hh), d),  # NE
-            QuadTree(Rect(x,      y + hh, hw, hh), d),  # SW
+            QuadTree(Rect(x, y, hw, hh), d),  # NW
+            QuadTree(Rect(x + hw, y, hw, hh), d),  # NE
+            QuadTree(Rect(x, y + hh, hw, hh), d),  # SW
             QuadTree(Rect(x + hw, y + hh, hw, hh), d),  # SE
         ]
 

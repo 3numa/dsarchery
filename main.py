@@ -9,7 +9,6 @@ from game import Game, FPS
 WIDTH  = 960
 HEIGHT = 620
 
-
 def main():
     pygame.init()
     pygame.display.set_caption("Archery // QuadTree Spatial Partitioning")

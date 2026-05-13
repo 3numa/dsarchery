@@ -116,7 +116,7 @@ def make_target(canvas_w):
 
 def spawn_targets(canvas_w, count=6):
     targets = []
-    depths  = list(DEPTH_LEVELS) * 2
+    depths  = list(DEPTH_LEVELS) * 4
     random.shuffle(depths)
     for i in range(count):
         z = depths[i] + random.uniform(-30, 30)
