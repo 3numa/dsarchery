@@ -12,7 +12,7 @@ from renderer import Renderer
 
 TOTAL_ARROWS = 10
 FPS          = 60
-MAX_TARGETS  = 6
+MAX_TARGETS  = 10
 
 class Game:
     def __init__(self, surface: pygame.Surface):
@@ -197,7 +197,7 @@ class Game:
         self._check_collisions()
 
         if self.SHOW_QUADTREE:
-            for rect in self.qt.get_leaf_boundaries():
+            for rect in self.qt.get_all_boundaries():
                 pygame.draw.rect(
                     self.surface,
                     (0, 255, 0),

@@ -4,7 +4,7 @@
 # collisions between objects that are actually close to each other.
 
 MAX_OBJECTS = 2  # max objects per node before it splits — finer partitions
-MAX_DEPTH   = 6   # hard cap to prevent infinite recursion
+MAX_DEPTH   = 7   # hard cap to prevent infinite recursion
 
 
 class Rect:
@@ -111,5 +111,20 @@ class QuadTree:
         else:
             for child in self.children:
                 child.get_leaf_boundaries(result)
+
+        return result
+
+    def get_all_boundaries(self, result: list = None) -> list:
+        """Collect every single node's boundary for a full grid visualization."""
+        if result is None:
+            result = []
+
+        # Add this node's boundary
+        result.append(self.boundary)
+
+        # If it has children, recursively add theirs too
+        if self.children:
+            for child in self.children:
+                child.get_all_boundaries(result)
 
         return result
