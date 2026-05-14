@@ -12,10 +12,8 @@ import math
 from physics import project, MAX_Z
 from targets import RINGS, OUTER_RADIUS
 
-
 def _get_font(size):
-    return pygame.font.SysFont("couriernew", size, bold=True)
-
+    return pygame.font.SysFont("franklingothicmedium", size)
 
 class Renderer:
     def __init__(self, surface: pygame.Surface):
@@ -36,10 +34,7 @@ class Renderer:
         self.surface = surface
         self._update_dims()
 
-    # ------------------------------------------------------------------ #
     # Background + floor grid
-    # ------------------------------------------------------------------ #
-
     def draw_background(self):
         W, H = self.W, self.H
         surf = self.surface
@@ -79,10 +74,7 @@ class Renderer:
             y = int(gy + (H - gy) * t)
             pygame.draw.line(surf, (50, 130, 50), (0, y), (W, y), 1)
 
-    # ------------------------------------------------------------------ #
     # Targets
-    # ------------------------------------------------------------------ #
-
     def draw_target(self, target, t):
         """
         Project target, update its screen bounding box (used by QuadTree and hit detection),
@@ -140,10 +132,7 @@ class Renderer:
                 pygame.draw.circle(s, (0, 0, 0, shadow_a), (outer_r, outer_r), outer_r)
                 surf.blit(s, (cx - outer_r, cy - outer_r))
 
-    # ------------------------------------------------------------------ #
     # Arrow
-    # ------------------------------------------------------------------ #
-
     def draw_arrow(self, arrow):
         if arrow is None or not arrow.alive:
             return
@@ -191,10 +180,7 @@ class Renderer:
                           rot(int(-shaft * 0.5), 0)]
                 pygame.draw.polygon(surf, (180, 40, 40), fletch)
 
-    # ------------------------------------------------------------------ #
-    # Bow — cosmetic, stays centered at bottom of screen
-    # ------------------------------------------------------------------ #
-
+    # Bow
     def draw_bow(self, power, charging):
         surf = self.surface
         bx   = self.W // 2
@@ -212,10 +198,7 @@ class Renderer:
         if charging and power > 5:
             pygame.draw.line(surf, (200, 165, 75), mid, (bx + 48, by), 3)
 
-    # ------------------------------------------------------------------ #
-    # Crosshair — rendered exactly at cursor position
-    # ------------------------------------------------------------------ #
-
+    # Crosshair
     def draw_crosshair(self, mouse_x, mouse_y):
         surf = self.surface
         cx, cy = mouse_x, mouse_y
@@ -226,10 +209,7 @@ class Renderer:
         # small dot at dead center
         pygame.draw.circle(surf, (255, 80, 80), (cx, cy), 2)
 
-    # ------------------------------------------------------------------ #
     # Power bar
-    # ------------------------------------------------------------------ #
-
     def draw_power_bar(self, power):
         surf  = self.surface
         bar_w = 160
@@ -246,10 +226,7 @@ class Renderer:
             pygame.draw.rect(surf, (r, g, 40), (bx, by, fill_w, bar_h))
         pygame.draw.rect(surf, (255, 255, 255), (bx, by, bar_w, bar_h), 1)
 
-    # ------------------------------------------------------------------ #
     # HUD
-    # ------------------------------------------------------------------ #
-
     def draw_hud(self, score, arrows, wind):
         surf = self.surface
         pygame.draw.rect(surf, (0, 0, 0),    (10, 10, 230, 100), border_radius=4)
@@ -277,10 +254,7 @@ class Renderer:
         font = self.font_sm if small else self.font_lg
         self.surface.blit(font.render(msg, True, color[:3]), pos)
 
-    # ------------------------------------------------------------------ #
     # Score popup
-    # ------------------------------------------------------------------ #
-
     def draw_score_pop(self, text, sx, sy, life):
         font   = _get_font(int(20 + (1 - life) * 8))
         surf_t = font.render(text, True, (255, 224, 51))
@@ -288,10 +262,7 @@ class Renderer:
         rect   = surf_t.get_rect(center=(int(sx), int(sy - (1 - life) * 45)))
         self.surface.blit(surf_t, rect)
 
-    # ------------------------------------------------------------------ #
     # Game over screen
-    # ------------------------------------------------------------------ #
-
     def draw_game_over(self, score):
         overlay = pygame.Surface((self.W, self.H), pygame.SRCALPHA)
         overlay.fill((0, 0, 0, 175))
@@ -303,6 +274,6 @@ class Renderer:
             s = _get_font(size).render(text, True, color)
             self.surface.blit(s, s.get_rect(center=(cx, y)))
 
-        centered(52, "QUIVER EMPTY",           cy - 55, (255, 224, 51))
+        centered(52, "QUIVER EMPTY", cy - 55, (255, 224, 51))
         centered(32, f"Final Score:  {score}", cy + 10, (255, 255, 255))
         centered(20, "Press  R  to play again", cy + 60, (160, 200, 160))

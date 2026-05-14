@@ -1,11 +1,11 @@
 # quadtree.py
 # The main data structure for this project.
+
 # Divides 2D space into quadrants recursively so we only check
 # collisions between objects that are actually close to each other.
 
 MAX_OBJECTS = 2  # max objects per node before it splits — finer partitions
-MAX_DEPTH   = 7   # hard cap to prevent infinite recursion
-
+MAX_DEPTH   = 6   # hard cap to prevent infinite recursion
 
 class Rect:
     """A simple axis-aligned bounding box."""
@@ -28,7 +28,6 @@ class Rect:
 
     def __repr__(self):
         return f"Rect({self.x:.0f}, {self.y:.0f}, {self.w:.0f}, {self.h:.0f})"
-
 
 class QuadTree:
     def __init__(self, boundary: Rect, depth: int = 0):

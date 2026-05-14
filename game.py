@@ -2,9 +2,7 @@
 # Main game loop, input, state, and QuadTree collision pipeline.
 
 import pygame
-import math
 import random
-
 from quadtree import QuadTree, Rect
 from physics  import Arrow
 from targets  import spawn_targets, make_target
@@ -12,7 +10,7 @@ from renderer import Renderer
 
 TOTAL_ARROWS = 10
 FPS          = 60
-MAX_TARGETS  = 10
+MAX_TARGETS  = 6
 
 class Game:
     def __init__(self, surface: pygame.Surface):

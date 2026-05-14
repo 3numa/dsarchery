@@ -1,9 +1,9 @@
 # physics.py
 # Arrow physics + perspective projection.
-#
+
 # Screen-space half-parabola: cursor position is the apex, arrow only falls.
 # screen_sy grows monotonically — the upward-bend artifact is impossible.
-#
+
 # Draw power: only controls vz (depth reach). Everything else is fixed.
 # Wind: screen-space accumulation so drift is visible and predictable.
 
@@ -17,12 +17,10 @@ BASE_VZ        = 1100  # wz/sec at 100% draw
 # At wind=10 over a 1s flight this gives ~35px of lateral drift.
 WIND_COEFF = 3.5
 
-
 def project(wx, wy, wz, vp_x, vp_y):
     """Perspective projection. wx/wy are world offsets from the vanishing point."""
     scale = max(0.01, 1.0 - wz / (MAX_Z * 1.4))
     return vp_x + wx * scale, vp_y + wy * scale, scale
-
 
 class Arrow:
 
